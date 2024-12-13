@@ -1,222 +1,325 @@
-# Awesome-RTC-Test
+# Awesome-RTC-Test Test Tool Guide
 
-[中文版](README_CH.md)
+## 1. Audio Device Simulation Tools
 
-## Audio Quality Test Framework
+### 1. Professional Audio Virtual Devices
+#### Virtual Audio Cable (VAC)
+A professional virtual audio device driver that provides audio routing between applications.
 
-### AATT (Automated Audio Test Tool)
-Google's open-source WebRTC audio test tool  
-GitHub: [https://github.com/webrtc/AATT](https://github.com/webrtc/AATT)  
-Features: 
-- Automated testing for audio quality, latency, noise, etc.
-- Supports various audio codecs
-- Provides detailed test reports and analysis
+Features:
+* Create multiple virtual audio devices
+* Supports different audio formats and sample rates
+* Provides low-latency audio transmission
+* Supports ASIO drivers
 
-### WebRTC-APM-Test
-Test framework for WebRTC audio processing module  
-GitHub: [https://github.com/wiseman/py-webrtcvad](https://github.com/wiseman/py-webrtcvad)  
-Provides a complete audio pre-processing test solution:
-- Includes noise suppression, echo cancellation, gain control, etc.
-- Supports various audio input and output formats
-- Can simulate different audio environments for testing
+Usage:
+```bash
+# Install VAC
+1. Download the VAC installation package
+2. Install the driver
+3. Configure virtual device parameters
 
-## Audio Analysis Tools
+# Usage example
+1. Create a virtual audio device
+2. Select the virtual device in the application
+3. Configure audio routing
+```
 
-### Asterisk Test Suite
-Test suite for the Asterisk project  
-GitHub: [https://github.com/asterisk/test-suite](https://github.com/asterisk/test-suite)  
-Contains numerous VoIP audio test cases:
-- Supports SIP, PJSIP, and other protocols
-- Provides audio quality, latency, jitter testing functions
-- Can integrate with Asterisk server for end-to-end testing
+#### BlackHole (macOS)
+An open-source audio device simulation tool for macOS.
 
-### Audio Quality Test Tools
-Mozilla's open-source audio quality test toolset  
-GitHub: [https://github.com/mozilla/audio-test-tools](https://github.com/mozilla/audio-test-tools)  
-Supports audio codec performance testing:
-- Includes audio encoding, decoding, transcoding functions
-- Provides audio quality evaluation tools like PESQ, POLQA
-- Supports batch testing and automation
+Features:
+* Supports multi-channel audio
+* Zero-latency transmission
+* Supports various sample rates
+* Compatible with Core Audio
 
-## Network Simulation Tools
+Usage:
+```bash
+# Install BlackHole
+brew install blackhole-2ch
 
-### Network Link Conditioner
-Apple's open-source network condition simulation tool  
-Can simulate audio transmission under various network conditions:
-- Supports bandwidth limitation, latency, packet loss, etc.
-- Can simulate different network types like Wi-Fi, 4G, 3G
-- Provides an easy-to-use graphical interface
+# Configure audio device
+1. Select BlackHole as the audio device in System Preferences
+2. Select the BlackHole device in the application
+```
 
-### netem
-Linux kernel network emulation module  
-Commonly used for WebRTC testing:
-- Supports delay, jitter, packet loss, bandwidth limitation, etc.
-- Can be combined with other network tools like tc, iptables
-- Provides a flexible command-line interface
+### 2. System Audio Services
+#### PulseAudio Virtual Devices
+An open-source audio server for Linux that supports virtual device creation.
 
-## Audio Metrics Measurement
+Features:
+* Create virtual sound card devices
+* Supports audio stream redirection
+* Provides audio format conversion
+* Supports network audio transmission
 
-### PESQ-Python
-Python implementation of the PESQ algorithm  
-GitHub: [https://github.com/vBaiCai/python-pesq](https://github.com/vBaiCai/python-pesq)  
-Used for measuring perceptual audio quality:
-- Supports PESQ (Perceptual Evaluation of Speech Quality) algorithm
-- Can evaluate audio quality under different codecs and network conditions
-- Provides detailed quality scores and analysis reports
+Usage:
+```bash
+# Install PulseAudio
+sudo apt-get install pulseaudio
 
-### PyDSP
-Digital signal processing toolkit  
-GitHub: [https://github.com/pydsp/pydsp](https://github.com/pydsp/pydsp)  
-Provides audio analysis functions:
-- Includes filtering, spectrum analysis, signal transformation, etc.
-- Supports various audio formats and sampling rates
-- Provides an easy-to-use Python interface
+# Create virtual devices
+pactl load-module module-null-sink sink_name=virtual_speaker
+pactl load-module module-virtual-source source_name=virtual_mic
 
-## Suggestions for Building Your Own Test Framework
+# List devices
+pactl list short sinks
+pactl list short sources
+```
 
-If you want to build your own test framework, I suggest:
-- Refer to the overall architecture design of AATT
-- Use the audio processing test solution of WebRTC-APM-Test
-- Integrate PESQ-Python for quality evaluation
-- Use netem for network simulation
+#### JACK Audio Connection Kit
+A professional-grade audio server that provides flexible virtual device support.
 
-## How to Use These Tools to Test Video Conferencing Software
+Features:
+* Low-latency audio processing
+* Flexible audio routing
+* Supports MIDI device simulation
+* Provides API interfaces
 
-### Using AATT for Audio Quality Testing
-1. Clone the AATT repository and install dependencies:
-    ```bash
-    git clone https://github.com/webrtc/AATT.git
-    cd AATT
-    npm install
-    ```
-2. Configure test parameters, such as audio file paths, test types, etc.
-3. Run the test and generate a report:
-    ```bash
-    npm run test
-    ```
+Usage:
+```bash
+# Install JACK
+sudo apt-get install jackd2
 
-### Using WebRTC-APM-Test for Audio Processing Testing
-1. Clone the WebRTC-APM-Test repository and install dependencies:
-    ```bash
-    git clone https://github.com/wiseman/py-webrtcvad.git
-    cd py-webrtcvad
-    pip install -r requirements.txt
-    ```
-2. Configure test parameters, such as input audio files, processing modules, etc.
-3. Run the test and analyze the results:
-    ```bash
-    python run_tests.py
-    ```
+# Start JACK service
+jackd -d alsa -r 48000
 
-### Using Asterisk Test Suite for VoIP Audio Testing
-1. Clone the Asterisk Test Suite repository and install dependencies:
-    ```bash
-    git clone https://github.com/asterisk/test-suite.git
-    cd test-suite
-    ./install_prerequisites.sh
-    ```
-2. Configure the Asterisk server and test cases.
-3. Run the test and generate a report:
-    ```bash
-    ./run_tests.sh
-    ```
+# Create virtual devices
+alsa_in -j virtual_mic -d hw:0
+alsa_out -j virtual_speaker -d hw:0
+```
 
-### Using Audio Quality Test Tools for Audio Codec Performance Testing
-1. Clone the Audio Quality Test Tools repository and install dependencies:
-    ```bash
-    git clone https://github.com/mozilla/audio-test-tools.git
-    cd audio-test-tools
-    pip install -r requirements.txt
-    ```
-2. Configure test parameters, such as encoders, decoders, audio files, etc.
-3. Run the test and generate a report:
-    ```bash
-    python run_tests.py
-    ```
+## 2. Audio Quality Test Tools
 
-### Using Network Link Conditioner to Simulate Network Conditions
-1. Download and install Network Link Conditioner.
-2. Configure network conditions, such as bandwidth limitation, latency, packet loss, etc.
-3. Start Network Link Conditioner and run Zoom for testing.
+### 1. AATT (Automated Audio Test Tool)
+Google's open-source WebRTC audio test tool.
 
-### Using netem to Simulate Network Conditions
-1. Install netem on a Linux system:
-    ```bash
-    sudo apt-get install iproute2
-    ```
-2. Configure network conditions, such as delay, jitter, packet loss, etc.:
-    ```bash
-    sudo tc qdisc add dev eth0 root netem delay 100ms
-    ```
-3. Run Zoom for testing.
+Features:
+* Automated audio quality testing
+* Latency, noise, and other metrics testing
+* Supports various audio codecs
+* Provides detailed test reports
 
-### Using PESQ-Python to Measure Perceptual Audio Quality
-1. Clone the PESQ-Python repository and install dependencies:
-    ```bash
-    git clone https://github.com/vBaiCai/python-pesq.git
-    cd python-pesq
-    pip install -r requirements.txt
-    ```
-2. Configure test parameters, such as reference audio files, test audio files, etc.
-3. Run the test and generate quality scores:
-    ```bash
-    python pesq_test.py
-    ```
+Usage:
+```bash
+# Install AATT
+git clone https://github.com/webrtc/AATT.git
+cd AATT
+npm install
 
-### Using PyDSP for Audio Analysis
-1. Clone the PyDSP repository and install dependencies:
-    ```bash
-    git clone https://github.com/pydsp/pydsp.git
-    cd pydsp
-    pip install -r requirements.txt
-    ```
-2. Configure analysis parameters, such as audio files, analysis types, etc.
-3. Run the analysis and generate a report:
-    ```bash
-    python analyze.py
-    ```
+# Run tests
+npm run test
+```
 
-## Desktop Video Conferencing Client Test Tools
+### 2. WebRTC-APM-Test
+A test framework for WebRTC audio processing modules.
 
-### TestRTC
-TestRTC is a tool specifically designed for testing WebRTC applications, supporting desktop video conferencing client testing.
-- Features:
-  - Supports end-to-end WebRTC testing
-  - Provides real-time monitoring and reporting
-  - Supports simulating different network conditions
-- Usage:
-  1. Register and log in to the TestRTC platform.
-  2. Create a new test case, configure test parameters, such as test URL, network conditions, etc.
-  3. Run the test and view real-time monitoring and reports.
+Features:
+* Noise suppression testing
+* Echo cancellation testing
+* Gain control testing
+* Supports various audio formats
 
-### Pion WebRTC
-Pion WebRTC is an open-source WebRTC implementation that supports desktop video conferencing client testing.
-- Features:
-  - Provides flexible API interfaces
-  - Supports multiple programming languages
-  - Can be used with other test tools
-- Usage:
-  1. Clone the Pion WebRTC repository and install dependencies:
-      ```bash
-      git clone https://github.com/pion/webrtc.git
-      cd webrtc
-      go get ./...
-      ```
-  2. Write test scripts, configure test parameters, such as video streams, audio streams, etc.
-  3. Run the test scripts and analyze the results.
+Usage:
+```bash
+# Install dependencies
+git clone https://github.com/wiseman/py-webrtcvad.git
+cd py-webrtcvad
+pip install -r requirements.txt
 
-### Selenium
-Selenium is a widely used automation testing tool that can be used to test the web interface of desktop video conferencing clients.
-- Features:
-  - Supports multiple browsers and operating systems
-  - Provides rich API interfaces
-  - Supports writing automated test scripts
-- Usage:
-  1. Install Selenium and browser drivers:
-      ```bash
-      pip install selenium
-      ```
-  2. Write test scripts, configure test parameters, such as test URL, user actions, etc.
-  3. Run the test scripts and generate reports.
+# Run tests
+python run_tests.py
+```
 
-By following the above steps, you can use these tools to comprehensively test video conferencing software (e.g., Zoom) for audio quality, processing, network condition simulation, and metrics measurement.
+### 3. Audio Quality Test Tools
+Mozilla's open-source audio quality test toolset.
+
+Features:
+* Codec performance testing
+* Audio transcoding testing
+* PESQ/POLQA evaluation
+* Supports batch testing
+
+## 3. Network Simulation Tools
+
+### 1. Network Link Conditioner
+Apple's network condition simulation tool.
+
+Features:
+* Bandwidth limitation
+* Latency simulation
+* Packet loss simulation
+* Graphical interface configuration
+
+### 2. netem
+Linux kernel network emulation module.
+
+Features:
+* Delay and jitter
+* Packet loss and reordering
+* Bandwidth limitation
+* Command-line control
+
+Usage:
+```bash
+# Install netem
+sudo apt-get install iproute2
+
+# Configure network conditions
+sudo tc qdisc add dev eth0 root netem delay 100ms
+```
+
+## 4. Audio Analysis Tools
+
+### 1. PESQ-Python
+Python implementation of the PESQ algorithm.
+
+Features:
+* Perceptual speech quality evaluation
+* Supports various codecs
+* Provides quality scores
+* Detailed analysis reports
+
+Usage:
+```bash
+# Install PESQ-Python
+git clone https://github.com/vBaiCai/python-pesq.git
+cd python-pesq
+pip install -r requirements.txt
+
+# Run tests
+python pesq_test.py
+```
+
+### 2. PyDSP
+Digital signal processing toolkit.
+
+Features:
+* Filtering analysis
+* Spectrum analysis
+* Signal transformation
+* Python interface
+
+## 5. Development Frameworks and Libraries
+
+### 1. Audio Device Simulation Development
+#### PortAudio
+A cross-platform audio I/O library.
+
+Features:
+* Cross-platform support
+* Unified API interface
+* Multiple audio backends
+* Flexible configuration
+
+Example code:
+```python
+import pyaudio
+import numpy as np
+
+def create_virtual_device():
+    p = pyaudio.PyAudio()
+    stream = p.open(
+        format=pyaudio.paFloat32,
+        channels=2,
+        rate=44100,
+        input=True,
+        output=True
+    )
+    return stream
+```
+
+#### RTAudio
+A professional-grade C++ audio library.
+
+Features:
+* Low-latency processing
+* ASIO support
+* Callback mechanism
+* Multi-format support
+
+### 2. WebRTC Test Frameworks
+#### TestRTC
+A tool specifically designed for WebRTC testing.
+
+Features:
+* End-to-end testing
+* Real-time monitoring
+* Network simulation
+* Report generation
+
+#### Pion WebRTC
+An open-source WebRTC implementation.
+
+Features:
+* Flexible API
+* Multi-language support
+* Tool integration
+
+## 6. Test Plans and Practices
+
+### 1. Device Simulation Test Plans
+#### Basic Functionality Testing
+* Device enumeration
+* Format support
+* Sample rate switching
+* Channel configuration
+
+#### Performance Testing
+* Latency testing
+* Resource usage
+* Stability testing
+* Stress testing
+
+#### Exceptional Scenario Testing
+* Hot-plugging devices
+* Resource contention
+* Error recovery
+* Concurrent access
+
+### 2. Integration Test Plans
+#### Environment Selection
+* Windows: Recommend VAC
+* Linux: PulseAudio/JACK
+* macOS: BlackHole
+
+#### Automated Testing
+* Device simulation preparation
+* Test case execution
+* Data collection
+* Report generation
+
+### 3. Best Practice Recommendations
+#### Tool Selection
+* Choose appropriate device simulation tools based on the platform
+* Use professional development frameworks
+* Integrate necessary test tools
+
+#### Test Coverage
+* Complete basic functionality
+* Handle exceptional scenarios
+* Verify performance metrics
+* Ensure long-term stability
+
+#### Considerations
+* Platform compatibility
+* Resource management
+* Error handling
+* Performance optimization
+
+## 7. Conclusion
+
+The choice and use of audio test toolchains are crucial for the quality of RTC products. By combining various tools reasonably, a complete test solution can be constructed:
+* Use professional device simulation tools for basic testing
+* Integrate audio quality analysis tools to evaluate performance
+* Use network simulation tools to verify adaptability
+* Establish automated test processes to improve efficiency
+
+In practical applications, it is necessary to choose the appropriate tool combination according to specific needs and pay attention to the following points:
+* Compatibility and stability of tools
+* Comprehensive test coverage
+* Improvement of automation level
+* Optimization of test efficiency
+
+Through systematic test plans and tool support, the quality of RTC products can be effectively guaranteed.
